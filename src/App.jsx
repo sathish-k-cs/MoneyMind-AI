@@ -145,7 +145,7 @@ function App() {
   useEffect(() => localStorage.setItem(STORAGE_TRANSACTIONS, JSON.stringify(transactions)), [transactions]);
   useEffect(() => localStorage.setItem(STORAGE_GOALS, JSON.stringify(goals)), [goals]);
   useEffect(() => {
-    fetch("http://localhost:8000/api/memory")
+    fetch("${API_BASE}/api/memory")
       .then((r) => { if (!r.ok) throw new Error("Memory endpoint unavailable"); return r.json(); })
       .then((data) => setCategoryRules(data.rules || []))
       .catch((err) => console.warn("MoneyMind memory:", err));
@@ -434,7 +434,7 @@ const spendingDrift = useMemo(() => {
       record.category !== editingTransaction.category
     ) {
       try {
-        const response = await fetch("http://localhost:8000/api/memory", {
+        const response = await fetch("${API_BASE}/api/memory", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -558,7 +558,7 @@ const spendingDrift = useMemo(() => {
     setMessage("");
     setChatLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/chat", {
+      const response = await fetch("${API_BASE}/api/chat", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: userMessage,
@@ -580,14 +580,14 @@ const spendingDrift = useMemo(() => {
       setChat(prev => [...prev, { role: "ai", text: data.reply || data.response || "I couldn't read the AI response." }]);
     } catch (error) {
       console.error("AI chat error:", error);
-      setChat(prev => [...prev, { role: "ai", text: "I couldn't connect to the AI server. Check that the backend is running at http://localhost:8000, then try again." }]);
+      setChat(prev => [...prev, { role: "ai", text: "I couldn't connect to the AI server. Check that the backend is running at ${API_BASE}, then try again." }]);
     } finally {
       setChatLoading(false);
     }
   };
   const detectRecurring = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/recurring", {
+      const response = await fetch("${API_BASE}/api/recurring", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ transactions })
